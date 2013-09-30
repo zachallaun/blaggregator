@@ -4,6 +4,7 @@ from django.utils import timezone
 from optparse import make_option
 from home.models import Blog, Post
 from home import feedergrabber27
+from home.tasks import ZulipNewPost
 import logging
 import requests
 import os
@@ -13,9 +14,6 @@ log = logging.getLogger("blaggregator")
 
 ROOT_URL = 'http://blaggregator.herokuapp.com/'
 
-STREAM = 'announce'
-key = os.environ.get('HUMBUG_KEY')
-email = os.environ.get('HUMBUG_EMAIL')
 
 class Command(NoArgsCommand):
 
@@ -59,11 +57,11 @@ class Command(NoArgsCommand):
 
                 if created:
                     print "Created", title
-                    # Only post to humbug if the post was created in the last 2 days
-                    #   so that new accounts don't spam humbug with their entire post list
+                    # Only post to zulip if the post was created in the last 2 days
+                    #   so that new accounts don't spam with their entire post list
                     if (now - date) < datetime.timedelta(days=2):
                         post_page = ROOT_URL + 'post/' + Post.objects.get(url=link).slug
-                        send_message_humbug(user=blog.user, link=post_page, title=title)
+                        ZulipNewPost.delay(blog.user, post_page, title)
 
                 # if new info, update the posts
                 if not created:
@@ -111,16 +109,3 @@ def cleantitle(title):
     return newtitle
 
 
-def send_message_humbug(user, link, title):
-
-    subject = "new blog post: %s" % title
-    subject = subject[:57] + "..."
-
-    data = {"type": "stream",
-            "to": "%s" % STREAM,
-            "subject": subject,
-            "content": "**%s** has a new blog post: [%s](%s)" % (user.first_name, title, link),
-        }
-
-    print data['content']
-    r = requests.post('https://humbughq-com-y3ee336dh1kn.runscope.net/api/v1/messages', data=data, auth=(email, key))
