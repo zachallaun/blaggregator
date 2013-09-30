@@ -6,6 +6,7 @@ class ZulipNewPost(Task):
     """ Notify Zulip that there is a new blog post. """
     
     def run(self, user, link, title):
+        print "ZULIPING"
         stream = 'test-bot'
         key = os.environ.get('HUMBUG_KEY')
         email = os.environ.get('HUMBUG_EMAIL')
