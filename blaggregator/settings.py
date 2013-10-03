@@ -61,7 +61,8 @@ DATABASES = {
 
 # Celery config
 # redis url format: redis://:password@hostname:port/db_number
-BROKER_URL = 'redis://localhost:6379/0'
+BROKER_URL = os.getenv('REDISTOGO_URL', 'redis://localhost:6379/0')
+
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts

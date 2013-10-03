@@ -21,6 +21,6 @@ class ZulipNewPost(Task):
                     "content": "**%s** has a new blog post: [%s](%s)" % (user.first_name, title, link),
                 }
 
-        print data['content']
+        print "Here's what was sent to Zulip:", data['content']
         r = requests.post('https://humbughq-com-y3ee336dh1kn.runscope.net/api/v1/messages', data=data, auth=(email, key))
         return True

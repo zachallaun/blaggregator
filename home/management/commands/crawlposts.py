@@ -12,7 +12,7 @@ import datetime
 
 log = logging.getLogger("blaggregator")
 
-ROOT_URL = 'http://blaggregator.herokuapp.com/'
+ROOT_URL = 'http://blaggregator.us/'
 
 
 class Command(NoArgsCommand):
@@ -61,6 +61,7 @@ class Command(NoArgsCommand):
                     #   so that new accounts don't spam with their entire post list
                     if (now - date) < datetime.timedelta(days=2):
                         post_page = ROOT_URL + 'post/' + Post.objects.get(url=link).slug
+                        print "Sending zulip"
                         ZulipNewPost.delay(blog.user, post_page, title)
 
                 # if new info, update the posts
