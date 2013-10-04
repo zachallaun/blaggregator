@@ -30,6 +30,8 @@ class Command(NoArgsCommand):
 
     def crawlblog(self, blog):
 
+        # todo: call sleeper celery task once
+        
         print "\n** CRAWLING", blog.feed_url
 
         # Feedergrabber returns ( [(link, title, date)], [errors])
@@ -61,7 +63,6 @@ class Command(NoArgsCommand):
                     #   so that new accounts don't spam with their entire post list
                     if (now - date) < datetime.timedelta(days=2):
                         post_page = ROOT_URL + 'post/' + Post.objects.get(url=link).slug
-                        print "Sending zulip"
                         ZulipNewPost.delay(blog.user, post_page, title)
 
                 # if new info, update the posts
