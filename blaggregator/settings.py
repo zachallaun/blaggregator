@@ -165,6 +165,10 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
 )
 
+# Celery config
+BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error when DEBUG=False.
