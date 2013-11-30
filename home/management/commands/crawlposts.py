@@ -8,6 +8,7 @@ import logging
 import requests
 import os
 import datetime
+from blaggregator.celery import debug_task
 
 log = logging.getLogger("blaggregator")
 
@@ -85,6 +86,7 @@ class Command(NoArgsCommand):
     def handle_noargs(self, **options):
 
         for blog in Blog.objects.all():
+            printer.delay()
             try:
                 self.crawlblog(blog)
             except Exception as e:
