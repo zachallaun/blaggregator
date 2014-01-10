@@ -8,7 +8,6 @@ import logging
 import requests
 import os
 import datetime
-from home.tasks import add
 
 log = logging.getLogger("blaggregator")
 

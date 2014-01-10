@@ -10,6 +10,7 @@ from django.core.files.temp import NamedTemporaryFile
 from django.shortcuts import render_to_response, render
 from home.models import Hacker, Blog, Post, Comment, Comment_Subscription
 from django.conf import settings
+from home.tasks import enqueue_comment_notification
 import requests
 import datetime
 import re
@@ -260,11 +261,14 @@ def item(request, slug):
     if request.method == 'POST':
         if request.POST['content']:
             
+            user = request.user
+            post = Post.objects.get(slug=slug)
+            
             # create the comment
             comment = Comment.objects.create(
                 slug         = ''.join(random.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for x in range(6)),
-                user            = request.user,
-                post            = Post.objects.get(slug=slug),
+                user            = user,
+                post            = post,
                 parent          = None,
                 date_modified   = datetime.datetime.now(),
                 content         = request.POST['content'],
@@ -272,11 +276,14 @@ def item(request, slug):
             comment.save()
             
             # add the commenter to the subscription list for this post
-            subscriber, created = Comment_Subscription.objects.get_or_create(
-                user = request.user,
-                post = Post.objects.get(slug=slug),
+            subscription, created = Comment_Subscription.objects.get_or_create(
+                user = user,
+                post = post,
             )
-    
+            
+            # kick off notifications to all subscribers
+            enqueue_comment_notification.delay(user, comment)
+            
     post = get_post_info(slug)
     commentList = get_comment_list(post)
     context = Context({
