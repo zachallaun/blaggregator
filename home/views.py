@@ -274,14 +274,12 @@ def item(request, slug):
                 content         = request.POST['content'],
             )
             comment.save()
-            
             # add the commenter to the subscription list for this post
             subscription, created = Comment_Subscription.objects.get_or_create(
                 user = user,
                 post = post,
             )
-            
-            # kick off notifications to all subscribers
+            # notify subscribers of new comment
             enqueue_comment_notification.delay(user, comment)
             
     post = get_post_info(slug)

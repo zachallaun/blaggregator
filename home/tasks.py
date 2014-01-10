@@ -12,8 +12,10 @@ def enqueue_comment_notification(commenter, comment):
     subscriptions = Comment_Subscription.objects.filter(post=comment.post)
     for subscriber in subscriptions: 
         if subscriber.user != commenter: 
-            send_comment_notifications.delay()
+            send_comment_notification(subscriber.user, commenter, comment)
             
 @task
-def send_comment_notifications():
-    print "sending email to %s" % subscriber.user.email 
+def send_comment_notification(subscriber, commenter, comment):
+    # todo actually send email 
+    print "Now sending email to %s about comment %s by %s" % \
+        (subscriber.email, comment, commenter)
