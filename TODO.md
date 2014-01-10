@@ -1,5 +1,5 @@
 Important infrastructure:
-[ ] Get Celery working locally
+[x] Get Celery working locally
 [ ] Deploy Celery to Heroku (requires internet)
 [ ] Upgrade logging (some notes in Trello, and Jorge's suggestions for settings.py config in Omnifocus)
 

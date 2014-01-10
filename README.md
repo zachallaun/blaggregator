@@ -19,6 +19,7 @@ Key files:
 - home/feedergrabber27.py: feed parser contributed by dpb
 - home/templates/home: all templates
 - home/views.py: all of the views ("controllers" if you're coming from Ruby)
+- home/tasks.py: all Celery (asynchronous) tasks go here
 
 Check out [CONTRIBUTE.md](CONTRIBUTE.md) for ideas for what to build.
 
@@ -68,3 +69,9 @@ then your server isn't running. Go fiddle with Postgres.app.
 You can administer your app through the [handy-dandy admin interface](http://localhost:8000/admin). You can be logged in as the admin or as your user account, but not both at the same time.
 
 This installation can be a bit fiddly but once it's set up, it's smooth sailing. 
+
+### Celery handles asychronous tasks
+
+So that the user has the snappiest browser experience possible, use Celery tasks for anything that you can do in the background.
+
+Remember: first start your Redis server with `redis-server`, then start your development celery daemon `celery -A blaggregator worker -l info`. And when you're adding your tasks, make sure to `from home.tasks import taskname`. 

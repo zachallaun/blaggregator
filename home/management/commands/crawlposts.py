@@ -8,7 +8,7 @@ import logging
 import requests
 import os
 import datetime
-from blaggregator.celery import debug_task
+from home.tasks import add
 
 log = logging.getLogger("blaggregator")
 
@@ -85,13 +85,11 @@ class Command(NoArgsCommand):
     @transaction.commit_manually
     def handle_noargs(self, **options):
 
-        for blog in Blog.objects.all():
-            printer.delay()
+        for blog in Blog.objects.all():     
             try:
                 self.crawlblog(blog)
             except Exception as e:
                 log.exception(e)
-
         if options['dry_run']:
             transaction.rollback()
             print "\nDON'T FORGET TO RUN THIS FOR REAL\n"
