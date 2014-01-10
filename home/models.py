@@ -47,3 +47,13 @@ class Comment(models.Model):
     parent          = models.ForeignKey('self', blank=True, null=True)
     date_modified   = models.DateTimeField('date modified')
     content         = models.TextField()
+
+class Comment_Subscription(models.Model):
+    ''' Keeps track of which users should be notified about new comments on a post. '''
+    
+    def __unicode__(self):
+        return "%s on %s" % (self.user.first_name, self.post.slug)
+        
+    user = models.ForeignKey(User)
+    post = models.ForeignKey(Post)
+    date = models.DateTimeField(auto_now=True)

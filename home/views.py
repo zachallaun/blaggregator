@@ -8,7 +8,7 @@ from django.core.context_processors import csrf
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from django.shortcuts import render_to_response, render
-from home.models import Hacker, Blog, Post, Comment
+from home.models import Hacker, Blog, Post, Comment, Comment_Subscription
 from django.conf import settings
 import requests
 import datetime
@@ -259,6 +259,8 @@ def item(request, slug):
 
     if request.method == 'POST':
         if request.POST['content']:
+            
+            # create the comment
             comment = Comment.objects.create(
                 slug         = ''.join(random.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for x in range(6)),
                 user            = request.user,
@@ -268,11 +270,15 @@ def item(request, slug):
                 content         = request.POST['content'],
             )
             comment.save()
-
+            
+            # add the commenter to the subscription list for this post
+            subscriber, created = Comment_Subscription.objects.get_or_create(
+                user = request.user,
+                post = Post.objects.get(slug=slug),
+            )
+    
     post = get_post_info(slug)
-
     commentList = get_comment_list(post)
-
     context = Context({
         "post": post,
         "commentList": commentList,
