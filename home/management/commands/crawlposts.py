@@ -62,6 +62,12 @@ class Command(NoArgsCommand):
                     if (now - date) < datetime.timedelta(days=2):
                         post_page = ROOT_URL + 'post/' + Post.objects.get(url=link).slug
                         send_message_humbug(user=blog.user, link=post_page, title=title)
+                        
+                    # subscribe the author to comment updates
+                    subscription, created = Comment_Subscription.objects.get_or_create(
+                        user = blog.user,
+                        post = post,
+                    )
 
                 # if new info, update the posts
                 if not created:
