@@ -257,38 +257,36 @@ def feed(request):
 
 @login_required(login_url='/log_in')
 def item(request, slug):
-
-    if request.method == 'POST':
-        if request.POST['content']:
-            
-            user = request.user
-            post = Post.objects.get(slug=slug)
-            
-            # create the comment
-            comment = Comment.objects.create(
-                slug         = ''.join(random.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for x in range(6)),
-                user            = user,
-                post            = post,
-                parent          = None,
-                date_modified   = datetime.datetime.now(),
-                content         = request.POST['content'],
-            )
-            comment.save()
-            # add the commenter to the subscription list for this post
-            subscription, created = Comment_Subscription.objects.get_or_create(
-                user = user,
-                post = post,
-            )
-            # notify subscribers of new comment
-            enqueue_comment_notification.delay(user, comment)
+    
+    user = request.user
+    if request.method == 'POST' and request.POST['content']:
+        post = Post.objects.get(slug=slug)
+        
+        # create the comment
+        comment = Comment.objects.create(
+            slug         = ''.join(random.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for x in range(6)),
+            user            = user,
+            post            = post,
+            parent          = None,
+            date_modified   = datetime.datetime.now(),
+            content         = request.POST['content'],
+        )
+        comment.save()
+        # add the commenter to the subscription list for this post
+        subscription, created = Comment_Subscription.objects.get_or_create(
+            user = user,
+            post = post,
+        )
+        # notify subscribers of new comment
+        enqueue_comment_notification.delay(user, comment)
             
     post = get_post_info(slug)
     commentList = get_comment_list(post)
     context = Context({
         "post": post,
         "commentList": commentList,
+        "subscribed": Comment_Subscription.objects.filter(user=user, post=post).exists()
     })
-
     return render_to_response('home/item.html', context, context_instance=RequestContext(request))
 
 # login NOT required

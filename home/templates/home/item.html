@@ -19,6 +19,11 @@
         <h4 class="media-heading"><a href="view">{{ post.title }}</a></h4>
         <span class="byline">by <a href="http://hackerschool.com/people/{{ post.authorid }}">{{ post.author }}</a></span>
       </div>
+      <div>
+        <button type="submit" class="btn pull-right" style="position:relative; bottom:-50px;">
+            {% if subscribed %}Unsubscribe from comments
+            {% else %}Subscribe to comments{% endif %}</button>
+      </div>
     </div>
 </div>
 
@@ -34,7 +39,6 @@
         <p class="meta">
           <span class="byline"><a href="http://hackerschool.com/people/{{ comment.authorid }}">{{ comment.author }}</a> said,</span>
           <span class="date">{{ comment.date_modified | naturaltime }}: </span>
-          <!-- &bull; <span class="permalink"><a href="post/{{ comment.slug }}" class="muted">Permalink</a></span> -->
         </p>
 
         <p class="content">{{ comment.content }}</p>
