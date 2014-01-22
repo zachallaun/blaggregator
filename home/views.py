@@ -254,6 +254,11 @@ def feed(request):
 
     return render(request, 'home/atom.xml', context, content_type="text/xml")
 
+@login_required(login_url='/log_in')
+def toggle_subscription(request, slug):
+    if request.method == 'POST':
+        pass # todo
+    return HttpResponseRedirect('post/' + slug)
 
 @login_required(login_url='/log_in')
 def item(request, slug):
