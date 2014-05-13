@@ -1,4 +1,4 @@
 web: gunicorn blaggregator.wsgi 
-worker: python manage.py celery worker -B
+worker: celery -A blaggregator worker -l info 
 
 crawlposts: python manage.py crawlposts

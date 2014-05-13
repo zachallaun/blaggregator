@@ -186,7 +186,7 @@ if os.environ.get('PROD', None):
 elif os.environ.get('STAGING', None):
     SOCIAL_AUTH_HACKERSCHOOL_REDIRECT_URL = 'http://blaggregator-staging.herokuapp.com/complete/hackerschool'
 else:
-    SOCIAL_AUTH_HACKERSCHOOL_REDIRECT_URL = 'http://localhost:8000/complete/hackerschool'
+    SOCIAL_AUTH_HACKERSCHOOL_REDIRECT_URL = 'http://127.0.0.1:8000/complete/hackerschool'
 
 SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.social_auth.social_details',
@@ -203,8 +203,12 @@ SOCIAL_AUTH_PIPELINE = (
 )
 
 # Celery config
-BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+if os.environ.get('PROD', None) or os.environ.get('STAGING', None):
+    BROKER_URL =            os.environ.get('REDISTOGO_URL', None)
+    CELERY_RESULT_BACKEND = os.environ.get('REDISTOGO_URL', None)
+else:
+    BROKER_URL =            'redis://localhost:6379/0'
+    CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

@@ -16,6 +16,10 @@ import re
 import feedergrabber27
 import random, string
 import math
+
+# todo fix?
+from home.tasks import add
+
     
 def get_post_info(slug):
     """ Gets the post object at a given slug. """
@@ -60,6 +64,8 @@ def log_in_oauth(request):
     if request.user.is_authenticated():
         return HttpResponseRedirect('/new')
     else:
+        # todo remove
+        print "******* %s" % add.delay(2,54)
         return render(request, 'home/log_in_oauth.html')
 
 @login_required
