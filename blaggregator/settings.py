@@ -206,6 +206,9 @@ SOCIAL_AUTH_PIPELINE = (
 if os.environ.get('PROD', None) or os.environ.get('STAGING', None):
     BROKER_URL =            os.environ.get('REDISTOGO_URL', None)
     CELERY_RESULT_BACKEND = os.environ.get('REDISTOGO_URL', None)
+    # A workaround for production Heroku Redis max connection errors: 
+    # BROKER_POOL_LIMIT =     None
+    CELERY_REDIS_MAX_CONNECTIONS = 5
 else:
     BROKER_URL =            'redis://localhost:6379/0'
     CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
