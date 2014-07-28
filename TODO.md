@@ -1,6 +1,9 @@
 Important infrastructure:
 [x] Get Celery working locally
-[ ] Deploy Celery to Heroku (requires internet)
+[ ] Deploy Celery to Heroku
+    [ ] What branch is deployed to Heroku?
+    [ ] Look into "running Celery as a daemon"
+    [ ] Hook up the new redis instance (from Jori)
 [ ] Upgrade logging (some notes in Trello, and Jorge's suggestions for settings.py config in Omnifocus)
 
 Features that will drive engagement:

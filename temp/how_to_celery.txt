@@ -1,0 +1,25 @@
+How to Celery:
+
+NEXT STEP: try Jori's redis instance and see if it works better than the free Redis Togo
+AND figure out the better way to run celery as a daemon
+
+Locally:
+1. Branch is newcelery
+2. Start redis-server
+3. Start celery: celery -A proj worker -l info
+4. define a task (called 'add' for example) in home/tasks.py
+   then, 
+   from home.tasks import add
+   add.delay(2,54)
+   
+   
+Staging:
+redis-togo should be running
+you may have to scale the worker process: heroku ps:scale worker=1 --remote staging
+
+from Jori: 
+
+redis://:335a80bd66dcc0cb63055dc339d3e758899adae901854f1d452da447812f17d4@54.225.254.163:14709
+
+for connecting locally
+redis-cli -h proxy5.openredis.com  -p 14709 -a 335a80bd66dcc0cb63055dc339d3e758899adae901854f1d452da447812f17d4
