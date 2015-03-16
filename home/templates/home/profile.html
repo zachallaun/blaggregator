@@ -6,21 +6,22 @@
     {% if owner %}
         Your
     {% else %}
-        <a class="avatar media-object pull-left" href="#">
+        <a class="avatar media-object pull-left" target="_blank" href="http://hackerschool.com/people/{{hacker.user.id}}">
           <img data-author-id="{{ hacker.user.id }}" src="{{ hacker.avatar_url }}" width="80px" height="80px" style="margin-bottom:1em; margin-right:0.5em;">
         </a>
         {{ hacker.user.first_name }} {{ hacker.user.last_name }}'s
     {% endif %}
-        blogs
+        Profile
     </p>
+<p>&nbsp;</p>
 {% endblock %}
 
-<p>&nbsp;</p>
 
 {% block content %}
 
     {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-
+<p>&nbsp;</p>
+<h2>Blogs</h2>
 
     <table class="table">
       <tr>
@@ -35,10 +36,19 @@
       {% endif %}
     </tr>
     {% endfor %}
+      <tr>
+        <td>
+          {% if owner %}
+          <a href="/add_blog" class="btn btn-success">Add another blog</a>
+          {% endif %}
+        </td>
+      </tr>
     </table>
 
-{% if owner %}
-    <a href="/add_blog" class="btn btn-success">Add another blog</a>
-{% endif %}
+    {% if post_list %}
+    <h2>Blog Posts</h2>
+    {% include 'home/postlist.html' %}
+    {% endif %}
+
 
 {% endblock %}

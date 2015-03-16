@@ -9,11 +9,11 @@ form {
     padding-top: 20px;
 }
 
-/* 
-    New posts page - main view 
+/*
+    New posts page - main view
 */
-.media .post {
-    margin-top:25px;
+.post {
+    margin-top: 25px;
 }
 /* title of each post listing */
 .media-heading {

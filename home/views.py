@@ -125,7 +125,6 @@ def add_blog(request):
 
 @login_required
 def profile(request, user_id):
-    """ A user's profile. Not currently tied to a template - needs work. """
 
     try:
         hacker = Hacker.objects.get(user=user_id)
@@ -137,10 +136,16 @@ def profile(request, user_id):
         added_blogs = Blog.objects.filter(user=user_id)
         owner = True if int(user_id) == request.user.id else False
 
+        post_list = Post.objects.filter(blog__user=user_id).order_by('-date_updated')
+        for post in post_list:
+            post.stream     = post.blog.get_stream_display()
+
         context = Context({
             'hacker': hacker,
             'blogs': added_blogs,
             'owner': owner,
+            'post_list': post_list,
+            'show_avatars': False,
         })
 
         response = render_to_response(
@@ -214,8 +219,8 @@ def new(request, page=1):
     end = start + items_per_page
     pages = int(math.ceil(Post.objects.count()/float(items_per_page)))
 
-    newPostList = Post.objects.order_by('-date_updated')[start:end]
-    for post in newPostList:
+    post_list = Post.objects.order_by('-date_updated')[start:end]
+    for post in post_list:
         user            = User.objects.get(blog__id__exact=post.blog_id)
         post.author     = user.first_name + " " + user.last_name
         post.authorid   = user.id
@@ -223,9 +228,10 @@ def new(request, page=1):
         post.stream     = post.blog.get_stream_display()
 
     context = Context({
-        "newPostList": newPostList,
+        "post_list": post_list,
         "page": int(page),
         "pages": pages,
+        'show_avatars': True,
     })
 
     return render_to_response('home/new.html',
